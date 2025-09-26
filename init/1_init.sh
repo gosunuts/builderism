@@ -54,11 +54,6 @@ if [ -z "${PROPOSER_ADDRESS:-}" ]; then
 	export PROPOSER_ADDRESS=$(echo "$wallet" | awk '/Address/ { print $2 }')
 	export PROPOSER_PRIVATE_KEY=$(echo "$wallet" | awk '/Private key/ { print $3 }')
 fi
-if [ -z "${SEQUENCER_ADDRESS:-}" ]; then
-	wallet=$(cast wallet new)
-	export SEQUENCER_ADDRESS=$(echo "$wallet" | awk '/Address/ { print $2 }')
-	export SEQUENCER_PRIVATE_KEY=$(echo "$wallet" | awk '/Private key/ { print $3 }')
-fi
 
 # save to file ( address.env )
 sudo mkdir -p /config
@@ -73,6 +68,4 @@ BATCHER_ADDRESS=$BATCHER_ADDRESS
 BATCHER_PRIVATE_KEY=$BATCHER_PRIVATE_KEY
 PROPOSER_ADDRESS=$PROPOSER_ADDRESS
 PROPOSER_PRIVATE_KEY=$PROPOSER_PRIVATE_KEY
-SEQUENCER_ADDRESS=$SEQUENCER_ADDRESS
-SEQUENCER_PRIVATE_KEY=$SEQUENCER_PRIVATE_KEY
 EOF
