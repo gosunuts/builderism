@@ -26,12 +26,12 @@ exec /app/geth \
   --http.corsdomain="*" \
   --http.addr=0.0.0.0 \
   --http.port=8545 \
-  --http.api=web3,debug,eth,txpool,net,engine \
+  --http.api=web3,debug,eth,txpool,net,engine,miner \
   --ws \
   --ws.addr=0.0.0.0 \
   --ws.port=8546 \
   --ws.origins="*" \
-  --ws.api=web3,debug,eth,txpool,net,engine \
+  --ws.api=web3,debug,eth,txpool,net,engine,miner \
   --authrpc.vhosts="*" \
   --authrpc.addr=0.0.0.0 \
   --authrpc.port=8551 \
