@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  backend:
+    image: blockscout/${DOCKER_REPO:-blockscout}:${DOCKER_TAG:-latest}
+    pull_policy: always
+    restart: always
+    stop_grace_period: 5m
+    container_name: 'backend'
+    command: sh -c "bin/blockscout eval \"Elixir.Explorer.ReleaseTasks.create_and_migrate()\" && bin/blockscout start"
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    env_file:
+      - ../../common.env
+      - ../../envs/${CHAIN_ENV_FILE}
+      - ../envs/common-blockscout.env
+    volumes:
+      - ../${SCAN_DATA_DIR-.}/logs/:/app/logs/
+    environment:
+      ETHEREUM_JSONRPC_HTTP_URL: ${L2_RPC_URL:-http://host.docker.internal:8545/}
+      ETHEREUM_JSONRPC_TRACE_URL: ${L2_RPC_URL:-http://host.docker.internal:8545/}
+      ETHEREUM_JSONRPC_WS_URL: ${L2_WS_URL:-ws://host.docker.internal:8546/}
+      CHAIN_ID: ${L2_CHAIN_ID:-11155111}

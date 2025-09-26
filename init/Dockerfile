@@ -2,13 +2,12 @@ FROM ubuntu:24.04
 
 WORKDIR /app
 
-# init system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    software-properties-common ca-certificates curl tar \
-    && apt-get update
+ARG UBUNTU_MIRROR=http://mirror.kakao.com/ubuntu
 
-RUN apt-get -y update && apt-get install -y just sudo jq wget curl git make procps coreutils bc xz-utils && \
-    sudo rm -rf /var/lib/apt/lists/*
+RUN sed -r -i "s#https?://(security|archive)\.ubuntu\.com/ubuntu#${UBUNTU_MIRROR}#g" /etc/apt/sources.list && \
+    apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates curl tar just sudo jq wget git make procps coreutils bc xz-utils && \
+    rm -rf /var/lib/apt/lists/*
 
 # install go
 RUN curl -sL https://golang.org/dl/go1.24.2.linux-amd64.tar.gz | tar -C /usr/local -xzf -
