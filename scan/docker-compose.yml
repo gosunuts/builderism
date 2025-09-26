@@ -1,41 +1,85 @@
+version: '3.9'
+
 services:
-  init:
-    build:
-      context: .
-    pull_policy: always
-    image: dreamcacao/builderism_scan:latest
-    command: [ "/bin/bash", "/script/init-entrypoint.sh" ]
-    volumes:
-      - ${CONFIG_DIR}:/config
-      - ${SCAN_DATA_DIR}:/data
-      - ./init-entrypoint.sh:/script/init-entrypoint.sh
-    env_file:
-      - ../common.env
-      - ../envs/${CHAIN_ENV_FILE}
-  indexer:
-    image: dreamcacao/builderism_scan:latest
-    pull_policy: always
+  redis-db:
+    extends:
+      file: ./services/redis.yml
+      service: redis-db
+
+  db-init:
+    extends:
+      file: ./services/db.yml
+      service: db-init
+
+  db:
     depends_on:
-      init:
+      db-init:
         condition: service_completed_successfully
-    volumes:
-      - ${SCAN_DATA_DIR}:/data
-      - ./indexer-entrypoint.sh:/script/indexer-entrypoint.sh
-    command: [ "/bin/bash", "/script/indexer-entrypoint.sh" ]
-    env_file:
-      - ../common.env
-      - ../envs/${CHAIN_ENV_FILE}
-  explorer:
-    image: dreamcacao/builderism_scan:latest
-    pull_policy: always
+    extends:
+      file: ./services/db.yml
+      service: db
+
+  backend:
     depends_on:
-      - indexer
-    ports:
-      - 3000:3000
-    volumes:
-      - ${SCAN_DATA_DIR}:/data
-      - ./explorer-entrypoint.sh:/script/explorer-entrypoint.sh
-    command: [ "/bin/bash", "/script/explorer-entrypoint.sh" ]
-    env_file:
-      - ../common.env
-      - ../envs/${CHAIN_ENV_FILE}
+      - db
+      - redis-db
+    extends:
+      file: ./services/backend.yml
+      service: backend
+    links:
+      - db:database
+
+  visualizer:
+    extends:
+      file: ./services/visualizer.yml
+      service: visualizer
+
+  sig-provider:
+    extends:
+      file: ./services/sig-provider.yml
+      service: sig-provider
+
+  frontend:
+    depends_on:
+      - backend
+    extends:
+      file: ./services/frontend.yml
+      service: frontend
+
+  stats-db-init:
+    extends:
+      file: ./services/stats.yml
+      service: stats-db-init
+
+  stats-db:
+    depends_on:
+      stats-db-init:
+        condition: service_completed_successfully
+    extends:
+      file: ./services/stats.yml
+      service: stats-db
+
+  stats:
+    depends_on:
+      - stats-db
+      - backend
+    extends:
+      file: ./services/stats.yml
+      service: stats
+
+  user-ops-indexer:
+    depends_on:
+      - db
+      - backend
+    extends:
+      file: ./services/user-ops-indexer.yml
+      service: user-ops-indexer
+
+  proxy:
+    depends_on:
+      - backend
+      - frontend
+      - stats
+    extends:
+      file: ./services/nginx.yml
+      service: proxy
