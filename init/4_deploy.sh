@@ -11,8 +11,8 @@ cd ~/optimism/op-deployer/bin
   --workdir .op-deployer
 
 sed -i \
-  -e "s|^configType *=.*|configType = \"standard-overrides\"|" \
-  -e "s|^opcmAddress *=.*|opcmAddress = \"$SUPERCHAIN_OPCM_ADDRESS\"|" \
+  -e "s/configType = \".*\"/configType = \"standard-overrides\"/" \
+  -e "s/opcmAddress = \".*\"/opcmAddress = \"$SUPERCHAIN_OPCM_ADDRESS\"/" \
   -e "s/baseFeeVaultRecipient = \".*\"/baseFeeVaultRecipient = \"$ADMIN_ADDRESS\"/" \
   -e "s/l1FeeVaultRecipient = \".*\"/l1FeeVaultRecipient = \"$ADMIN_ADDRESS\"/" \
   -e "s/sequencerFeeVaultRecipient = \".*\"/sequencerFeeVaultRecipient = \"$ADMIN_ADDRESS\"/" \

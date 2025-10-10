@@ -28,14 +28,11 @@ if [ -z "${SUPERCHAIN_OPCM_ADDRESS}" ]; then
     --superchain-config-proxy "$SUPERCHAIN_CONFIG_PROXY" \
     --protocol-versions-proxy "$PROTOCOL_VERSIONS_PROXY" \
     --superchain-proxy-admin "$SUPERCHAIN_PROXY_ADMIN" \
-    --upgrade-controller "$SUPERCHAIN_ADMIN_ADDRESS"
+    --upgrade-controller "$SUPERCHAIN_ADMIN_ADDRESS" \
+    --challenger "$SUPERCHAIN_CHALLENGER_ADDRESS"
   cp .op-deployer/implementations.json /config/implementations.json
 
-  export SUPERCHAIN_OPCM_ADDRESS=$(
-    jq -r '
-      .OPCM // .opcm // .OPContractsManagerProxy // .OPContractsManager // empty
-    ' .op-deployer/implementations.json
-  )
+  export SUPERCHAIN_OPCM_ADDRESS=$(jq -r '.opcmAddress' .op-deployer/implementations.json)
   echo "Deployed new OPCM address: $SUPERCHAIN_OPCM_ADDRESS"
 else 
   echo "Using existing OPCM address: $SUPERCHAIN_OPCM_ADDRESS"
