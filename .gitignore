@@ -1,4 +1,3 @@
 data-geth
 data-scan
 config/*
-!config/**/
