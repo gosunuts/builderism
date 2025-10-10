@@ -12,7 +12,7 @@ reqenv "L1_RPC_URL"
 reqenv "L1_CHAIN_ID"
 reqenv "L2_CHAIN_ID"
 
-echo "[1/3] : init environment variables"
+echo "[1/4] : init environment variables"
 
 export IMPL_SALT=$(openssl rand -hex 32)
 export DEPLOYMENT_CONTEXT=$L2_CHAIN_ID
@@ -55,6 +55,19 @@ if [ -z "${PROPOSER_ADDRESS:-}" ]; then
 	export PROPOSER_PRIVATE_KEY=$(echo "$wallet" | awk '/Private key/ { print $3 }')
 fi
 
+if [ -z "${SUPERCHAIN_OPCM_ADDRESS}" ]; then
+	if [ -z "${SUPERCHAIN_ADMIN_ADDRESS:-}" ]; then
+		wallet=$(cast wallet new)
+		export SUPERCHAIN_ADMIN_ADDRESS=$(echo "$wallet" | awk '/Address/ { print $2 }')
+		export SUPERCHAIN_ADMIN_PRIVATE_KEY=$(echo "$wallet" | awk '/Private key/ { print $3 }')
+	fi
+	if [ -z "${SUPERCHAIN_GUARDIAN_ADDRESS:-}" ]; then
+		wallet=$(cast wallet new)
+		export SUPERCHAIN_GUARDIAN_ADDRESS=$(echo "$wallet" | awk '/Address/ { print $2 }')
+		export SUPERCHAIN_GUARDIAN_PRIVATE_KEY=$(echo "$wallet" | awk '/Private key/ { print $3 }')
+	fi
+fi
+
 # save to file ( address.env )
 sudo mkdir -p /config
 env_file="/config/address.ini"
@@ -62,6 +75,10 @@ if [ -f "$env_file" ]; then
   sudo rm "$env_file"
 fi
 sudo tee "$env_file" > /dev/null <<EOF
+SUPERCHAIN_ADMIN_ADDRESS=$SUPERCHAIN_ADMIN_ADDRESS
+SUPERCHAIN_ADMIN_PRIVATE_KEY=$SUPERCHAIN_ADMIN_PRIVATE_KEY
+SUPERCHAIN_GUARDIAN_ADDRESS=$SUPERCHAIN_GUARDIAN_ADDRESS
+SUPERCHAIN_GUARDIAN_PRIVATE_KEY=$SUPERCHAIN_GUARDIAN_PRIVATE_KEY
 ADMIN_ADDRESS=$ADMIN_ADDRESS
 ADMIN_PRIVATE_KEY=$ADMIN_PRIVATE_KEY
 BATCHER_ADDRESS=$BATCHER_ADDRESS

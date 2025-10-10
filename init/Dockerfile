@@ -21,10 +21,10 @@ RUN . "$HOME/.profile" && foundryup
 
 # install op-deployer
 ENV OP_REPO=https://github.com/ethereum-optimism/optimism.git
-ENV OP_VERSION=${OP_VERSION:-op-deployer/v0.4.2}
+ENV OP_VERSION=${OP_VERSION:-op-deployer/v0.4.4}
 RUN mkdir -p ~/optimism && cd ~/optimism && \
-    git clone $OP_REPO --depth 1 --branch $OP_VERSION --single-branch . && \
-    git switch -c $OP_VERSION && cd op-deployer && just build
+    git clone $OP_REPO --depth 1 --branch $OP_VERSION --single-branch . && git switch -c $OP_VERSION && \
+    cd op-deployer && just build && just build-contracts && just copy-contract-artifacts
     
 COPY *.sh /script/
 RUN chmod +x /script/*.sh
@@ -33,4 +33,5 @@ ENTRYPOINT ["/bin/bash", "-c", \
     "chmod +x /script/*.sh && \
     source /script/1_init.sh && \
     /script/2_faucet.sh && \
-    /script/3_deploy.sh"]
+    /script/3_superchain.sh && \
+    /script/4_deploy.sh"]

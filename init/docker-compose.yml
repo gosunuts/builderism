@@ -2,13 +2,14 @@ services:
   node_init:
     build:
       context: .
-    image: dreamcacao/builderism_init:1.13.5
+    image: dreamcacao/builderism_init:0.4.4
     pull_policy: always
     volumes:
       - ${CONFIG_DIR}:/config
       - ./1_init.sh:/script/1_init.sh
       - ./2_faucet.sh:/script/2_faucet.sh
-      - ./3_deploy.sh:/script/3_deploy.sh
+      - ./3_superchain.sh:/script/3_superchain.sh
+      - ./4_deploy.sh:/script/4_deploy.sh
     env_file:
       - ../common.env
       - ../envs/${CHAIN_ENV_FILE}
