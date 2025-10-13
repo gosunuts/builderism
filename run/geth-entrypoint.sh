@@ -2,8 +2,8 @@
 set -eu
 
 RUN_MODE=${RUN_MODE:-"replica"}
-ADDITIONAL_ARGS=""
 
+ADDITIONAL_ARGS=""
 if [ "$RUN_MODE" != "sequencer" ]; then
   if [ ! -z "${OP_GETH_SEQUENCER_HTTP:-}" ]; then
     ADDITIONAL_ARGS+=" --rollup.halt=major"

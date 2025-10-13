@@ -2,7 +2,7 @@ services:
   init:
     build:
       context: .
-    image: dreamcacao/builderism_run:1.13.5
+    image: dreamcacao/builderism_run:1.13.7-local
     command: [ "bash", "/script/init-entrypoint.sh" ]
     volumes:
       - ${GETH_DATA_DIR}:/data
@@ -13,7 +13,7 @@ services:
       - ../common.env
       - ../envs/${CHAIN_ENV_FILE}
   geth:
-    image: dreamcacao/builderism_run:1.13.5
+    image: dreamcacao/builderism_run:1.13.7-local
     depends_on:
       init:
         condition: service_completed_successfully
@@ -37,7 +37,7 @@ services:
         max-size: "500m"
         max-file: "7"
   node:
-    image: dreamcacao/builderism_run:1.13.5
+    image: dreamcacao/builderism_run:1.13.7-local
     depends_on:
       - geth
     command: [ "bash", "/script/op-node-entrypoint.sh" ]
@@ -60,7 +60,7 @@ services:
         max-size: "500m"
         max-file: "7"
   batcher:
-    image: dreamcacao/builderism_run:1.13.5
+    image: dreamcacao/builderism_run:1.13.7-local
     depends_on:
       - node
     command: [ "bash", "/script/op-batcher-entrypoint.sh" ]
@@ -78,7 +78,7 @@ services:
         max-size: "500m"
         max-file: "7"
   proposer:
-    image: dreamcacao/builderism_run:1.13.5
+    image: dreamcacao/builderism_run:1.13.7-local
     depends_on:
       - batcher
     command: [ "bash", "/script/op-proposer-entrypoint.sh" ]
@@ -95,6 +95,25 @@ services:
       options:
         max-size: "500m"
         max-file: "7"
+  # challenger:
+  #   image: dreamcacao/builderism_run:1.13.7-local
+  #   depends_on:
+  #     - batcher
+  #   command: [ "bash", "/script/op-challenger-entrypoint.sh" ]
+  #   volumes:
+  #     - ${CHALLENGER_DATA_DIR}:/data
+  #     - ${CONFIG_DIR}:/config
+  #     - ./op-challenger-entrypoint.sh:/script/op-challenger-entrypoint.sh
+  #   networks:
+  #     - op-network
+  #   env_file:
+  #     - ../common.env
+  #     - ../envs/${CHAIN_ENV_FILE}
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "500m"
+  #       max-file: "7"
 networks:
   op-network:
     driver: bridge
