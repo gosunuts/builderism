@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-echo "[4/4] : generate config"
+echo "[4/4] : deploy l2 chain and generate config"
 
 cd ~/optimism/op-deployer/bin
 
@@ -9,6 +9,8 @@ cd ~/optimism/op-deployer/bin
   --l1-chain-id "$L1_CHAIN_ID" \
   --l2-chain-ids "$L2_CHAIN_ID" \
   --workdir .op-deployer
+
+export SUPERCHAIN_OPCM_ADDRESS=$(jq -r '.opcmAddress' /config/implementations.json)
 
 sed -i \
   -e "s/configType = \".*\"/configType = \"standard-overrides\"/" \

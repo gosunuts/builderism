@@ -54,23 +54,21 @@ if [ -z "${PROPOSER_ADDRESS:-}" ]; then
 	export PROPOSER_ADDRESS=$(echo "$wallet" | awk '/Address/ { print $2 }')
 	export PROPOSER_PRIVATE_KEY=$(echo "$wallet" | awk '/Private key/ { print $3 }')
 fi
+if [ -z "${CHALLENGER_ADDRESS:-}" ]; then
+	wallet=$(cast wallet new)
+	export CHALLENGER_ADDRESS=$(echo "$wallet" | awk '/Address/ { print $2 }')
+	export CHALLENGER_PRIVATE_KEY=$(echo "$wallet" | awk '/Private key/ { print $3 }')
+fi
 
-if [ -z "${SUPERCHAIN_OPCM_ADDRESS}" ]; then
-	if [ -z "${SUPERCHAIN_ADMIN_ADDRESS:-}" ]; then
+if [ -z "${SUPERCHAIN_ADMIN_ADDRESS}" ]; then
 		wallet=$(cast wallet new)
 		export SUPERCHAIN_ADMIN_ADDRESS=$(echo "$wallet" | awk '/Address/ { print $2 }')
 		export SUPERCHAIN_ADMIN_PRIVATE_KEY=$(echo "$wallet" | awk '/Private key/ { print $3 }')
-	fi
-	if [ -z "${SUPERCHAIN_GUARDIAN_ADDRESS:-}" ]; then
-		wallet=$(cast wallet new)
-		export SUPERCHAIN_GUARDIAN_ADDRESS=$(echo "$wallet" | awk '/Address/ { print $2 }')
-		export SUPERCHAIN_GUARDIAN_PRIVATE_KEY=$(echo "$wallet" | awk '/Private key/ { print $3 }')
-	fi
-	if [ -z "${SUPERCHAIN_CHALLENGER_ADDRESS:-}" ]; then
-		wallet=$(cast wallet new)
-		export SUPERCHAIN_CHALLENGER_ADDRESS=$(echo "$wallet" | awk '/Address/ { print $2 }')
-		export SUPERCHAIN_CHALLENGER_PRIVATE_KEY=$(echo "$wallet" | awk '/Private key/ { print $3 }')
-	fi
+fi
+if [ -z "${SUPERCHAIN_GUARDIAN_ADDRESS:-}" ]; then
+	wallet=$(cast wallet new)
+	export SUPERCHAIN_GUARDIAN_ADDRESS=$(echo "$wallet" | awk '/Address/ { print $2 }')
+	export SUPERCHAIN_GUARDIAN_PRIVATE_KEY=$(echo "$wallet" | awk '/Private key/ { print $3 }')
 fi
 
 # save to file ( address.env )
@@ -80,16 +78,16 @@ if [ -f "$env_file" ]; then
   sudo rm "$env_file"
 fi
 sudo tee "$env_file" > /dev/null <<EOF
-SUPERCHAIN_ADMIN_ADDRESS=$SUPERCHAIN_ADMIN_ADDRESS
-SUPERCHAIN_ADMIN_PRIVATE_KEY=${SUPERCHAIN_ADMIN_PRIVATE_KEY:-""}
-SUPERCHAIN_GUARDIAN_ADDRESS=$SUPERCHAIN_GUARDIAN_ADDRESS
-SUPERCHAIN_GUARDIAN_PRIVATE_KEY=${SUPERCHAIN_GUARDIAN_PRIVATE_KEY:-""}
-SUPERCHAIN_CHALLENGER_ADDRESS=$SUPERCHAIN_CHALLENGER_ADDRESS
-SUPERCHAIN_CHALLENGER_PRIVATE_KEY=${SUPERCHAIN_CHALLENGER_PRIVATE_KEY:-""}
 ADMIN_ADDRESS=$ADMIN_ADDRESS
 ADMIN_PRIVATE_KEY=$ADMIN_PRIVATE_KEY
 BATCHER_ADDRESS=$BATCHER_ADDRESS
 BATCHER_PRIVATE_KEY=$BATCHER_PRIVATE_KEY
 PROPOSER_ADDRESS=$PROPOSER_ADDRESS
 PROPOSER_PRIVATE_KEY=$PROPOSER_PRIVATE_KEY
+CHALLENGER_ADDRESS=$CHALLENGER_ADDRESS
+CHALLENGER_PRIVATE_KEY=$CHALLENGER_PRIVATE_KEY
+SUPERCHAIN_ADMIN_ADDRESS=$SUPERCHAIN_ADMIN_ADDRESS
+SUPERCHAIN_ADMIN_PRIVATE_KEY=${SUPERCHAIN_ADMIN_PRIVATE_KEY:-""}
+SUPERCHAIN_GUARDIAN_ADDRESS=$SUPERCHAIN_GUARDIAN_ADDRESS
+SUPERCHAIN_GUARDIAN_PRIVATE_KEY=${SUPERCHAIN_GUARDIAN_PRIVATE_KEY:-""}
 EOF
