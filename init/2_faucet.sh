@@ -5,7 +5,8 @@ set -eu
 FAUCET_PRIVATE_KEY="$FAUCET_PRIVATE_KEY"
 FAUCET_ADDRESS="$FAUCET_ADDRESS"
 
-echo "[2/3] : faucet eth to environment accounts"
+echo "[2/4] : faucet eth to environment accounts"
+
 send_eth() {
   receiver_address="$1"
   amount_to_eth="$2"

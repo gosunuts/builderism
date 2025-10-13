@@ -1,4 +1,4 @@
 data-geth
+data-challenger
 data-scan
 config/*
-!config/**/

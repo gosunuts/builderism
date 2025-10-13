@@ -1,13 +1,20 @@
 #!/bin/bash
 set -eu
 
-echo "[3/3] : generate config"
+echo "[4/4] : deploy l2 chain and generate config"
 
 cd ~/optimism/op-deployer/bin
 
-./op-deployer init --l1-chain-id $L1_CHAIN_ID --l2-chain-ids $L2_CHAIN_ID --workdir .op-deployer
+./op-deployer init \
+  --l1-chain-id "$L1_CHAIN_ID" \
+  --l2-chain-ids "$L2_CHAIN_ID" \
+  --workdir .op-deployer
+
+export SUPERCHAIN_OPCM_ADDRESS=$(jq -r '.opcmAddress' /config/implementations.json)
 
 sed -i \
+  -e "s/configType = \".*\"/configType = \"standard-overrides\"/" \
+  -e "s/opcmAddress = \".*\"/opcmAddress = \"$SUPERCHAIN_OPCM_ADDRESS\"/" \
   -e "s/baseFeeVaultRecipient = \".*\"/baseFeeVaultRecipient = \"$ADMIN_ADDRESS\"/" \
   -e "s/l1FeeVaultRecipient = \".*\"/l1FeeVaultRecipient = \"$ADMIN_ADDRESS\"/" \
   -e "s/sequencerFeeVaultRecipient = \".*\"/sequencerFeeVaultRecipient = \"$ADMIN_ADDRESS\"/" \

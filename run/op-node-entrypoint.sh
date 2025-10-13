@@ -2,9 +2,9 @@
 set -eu
 
 RUN_MODE=${RUN_MODE:-"replica"}
+
 OP_NODE_L1_ETH_RPC=${L1_RPC_URL}
 OP_NODE_L1_BEACON=${L1_BEACON_URL}
-
 ADDITIONAL_ARGS=""
 if [ "$RUN_MODE" = "sequencer" ]; then
   SEQUENCER_PRIVATE_KEY=$(grep "SEQUENCER_PRIVATE_KEY" /config/address.ini | cut -d'=' -f2)
@@ -73,4 +73,6 @@ exec /app/op-node \
   --p2p.listen.ip=0.0.0.0 \
   --p2p.listen.tcp=9222 \
   --p2p.listen.udp=9222 \
+  --sequencer.max-safe-lag=3600 \
+  --verifier.l1-confs=4 \
   $ADDITIONAL_ARGS
