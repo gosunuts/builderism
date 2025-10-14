@@ -14,7 +14,7 @@ RUN git clone $OP_REPO --depth 1 --branch op-node/$OP_VERSION --single-branch ./
     go build -o /app/op-proposer ./op-proposer/cmd && \
     go build -o /app/op-challenger ./op-challenger/cmd && \
     go build -o /app/cannon ./cannon && \
-    go build -o /app/op-program ./op-program
+    go build -o /app/op-program ./op-program/cmd
 
 FROM golang:1.25 AS geth
 
