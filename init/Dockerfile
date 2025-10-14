@@ -25,7 +25,7 @@ ENV OP_VERSION=${OP_VERSION:-op-deployer/v0.4.4}
 RUN mkdir -p ~/optimism && cd ~/optimism && \
     git clone $OP_REPO --depth 1 --branch $OP_VERSION --single-branch . && git switch -c $OP_VERSION && \
     cd op-deployer && just build-contracts && just copy-contract-artifacts && just build
-    
+
 COPY *.sh /script/
 RUN chmod +x /script/*.sh
 
